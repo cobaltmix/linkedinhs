@@ -4,13 +4,25 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 # List of all counties in the USA
 USA_COUNTIES = [
     ("US001", "Autauga County"),
+    ("US003", "Baldwin County"),
+    # Add more counties here...
+]
+
+# List of predefined interests
+INTEREST_CHOICES = [
+    ("sports", "Sports"),
+    ("music", "Music"),
+    ("technology", "Technology"),
+    ("reading", "Reading"),
+    ("traveling", "Traveling"),
+    # Add more interests here...
 ]
 
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, display_name, password=None, **extra_fields):
         if not username:
-            raise ValueError("Please input a valid username.")
+            raise ValueError("The Username field must be set")
         user = self.model(username=username, display_name=display_name, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -28,7 +40,7 @@ class User(AbstractBaseUser):
     display_name = models.CharField(max_length=150)
     birthday = models.DateField()
     county = models.CharField(max_length=10, choices=USA_COUNTIES)
-    interests = models.TextField(blank=True)
+    interests = models.CharField(max_length=20, choices=INTEREST_CHOICES)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
